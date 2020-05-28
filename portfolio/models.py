@@ -5,7 +5,7 @@ class ImageCollection(models.Model):
     """A collection of images
     """
     name = models.CharField(max_length=50)
-    thumbnail = models.ImageField()
+    thumbnail = models.ImageField(upload_to='imageCollectionThumbnails/')
     date_created = models.DateTimeField(default=timezone.now)
     description = models.TextField()
     def __str__(self):
@@ -19,7 +19,7 @@ class Image(models.Model):
     description = models.TextField()
     collection = models.ForeignKey(ImageCollection, on_delete=models.SET_NULL,
                                    null=True, blank=True)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
         return self.name
@@ -28,7 +28,7 @@ class CodeProject(models.Model):
     """A single code project
     """
     name = models.CharField(max_length=50)
-    thumbnail = models.ImageField()
+    thumbnail = models.ImageField(upload_to='codeProjectThumbnails/')
     date_created = models.DateTimeField(default=timezone.now)
     description = models.TextField()
     live_version_link = models.URLField(null=True, blank=True)
