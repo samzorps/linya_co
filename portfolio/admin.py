@@ -1,5 +1,5 @@
 from django.contrib import admin
+from .models import ArtCollection, Contact, ArtPiece, Sizes, CodeProject
 
-from .models import ImageCollection, Image, Contact, CodeProject
-
-admin.site.register([ImageCollection, Image, Contact, CodeProject])
+# Register your models here.
+admin.site.register([ArtCollection, Contact, ArtPiece, Sizes, CodeProject])

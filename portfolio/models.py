@@ -1,33 +1,45 @@
 from django.db import models
 from django.utils import timezone
 
-class ImageCollection(models.Model):
+class ArtCollection(models.Model):
     """A collection of images
     """
-    name = models.CharField(max_length=50)
-    thumbnail = models.ImageField(upload_to='imageCollectionThumbnails/')
+    name = models.CharField(max_length=100)
+    thumbnail = models.ImageField(upload_to='ArtCollectionThumbnails/')
     date_created = models.DateTimeField(default=timezone.now)
     description = models.TextField()
     def __str__(self):
         return self.name
 
-class Image(models.Model):
+class Sizes(models.Model):
+    class Meta:
+        """metadata about Sizes class
+        """
+        verbose_name_plural = 'Sizes'
+        verbose_name = 'Size'
+    size = models.CharField(max_length=30)
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+
+
+class ArtPiece(models.Model):
     """A single art gallery image
     """
-    name = models.CharField(max_length=50)
+
+    name = models.CharField(max_length=100)
     date_created = models.DateTimeField(default=timezone.now)
     description = models.TextField()
-    collection = models.ForeignKey(ImageCollection, on_delete=models.SET_NULL,
+    collection = models.ForeignKey('ArtCollection', on_delete=models.SET_NULL,
                                    null=True, blank=True)
-    image = models.ImageField(upload_to='images/')
-
+    image = models.ImageField(upload_to='ArtPieces/')
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    size_options = models.ManyToManyField('Sizes')
     def __str__(self):
         return self.name
 
 class CodeProject(models.Model):
     """A single code project
     """
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     thumbnail = models.ImageField(upload_to='codeProjectThumbnails/')
     date_created = models.DateTimeField(default=timezone.now)
     description = models.TextField()
