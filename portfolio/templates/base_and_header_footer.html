@@ -16,21 +16,31 @@
 
 
   <body>
-  <header>
-    <a href="#">
-      Portfolio
-    </a>
-  </header>
-
-  <main>
     <div class='container'>
+      <h1 class='text-center'>
+        Linya.co
+      </h1>
+      <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link text-body" href="{% url 'art_collection_list' %}">Art</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-body" href="{% url 'art_collection_list' %}">Code</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-body" href="#">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-body" href="{% url 'store_list_view' %}">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-body" href="#">Contact</a>
+        </li>
+      </ul>
       {% block content %}
       {% endblock %}
     </div>
-  </main>
-
-  <footer>
-  </footer>
+</div>
 
       <!-- Optional JavaScript -->
       <!-- jQuery first, then Popper.js, then Bootstrap JS -->

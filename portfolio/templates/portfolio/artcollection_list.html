@@ -1,5 +1,16 @@
-{% extends base_and_header_footer.html %}
+{% extends "base_and_header_footer.html" %}
 
 {% block content %}
-
+  <div class='flex-portfolio'>
+    {% for ac in collections %}
+      <div class="card text-white four-per-row">
+        <img src='{{ ac.thumbnail.url }}' class="card-img card-img-animated" alt="{{ ac.name }}">
+        <div class="card-img-overlay">
+          <h5 class="card-title card-text-animated">{{ ac.name }}</h5>
+          <p class="card-text card-text-animated">{{ ac.description }}</p>
+          <p class="card-text card-text-animated">{{ ac.date_created }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock content %}

@@ -1,4 +1,18 @@
-{% extends portfolio/base.html %}
+{% extends "base.html" %}
+
 {% block content %}
-  
+  <div class="home-container text-center text-align-bottom">
+    <div class="card text-white home-flex-item border-0">
+      <img src='{{ mostRecentArtPiece.image.url }}' class="card-img" alt="most recent piece">
+      <div class="card-img-overlay">
+        <a href="{% url 'art_collection_list' %}" class="btn btn-light home-btn">Art</a>
+      </div>
+    </div>
+    <div class="card text-white home-flex-item border-0">
+      <img src='{{ mostRecentCodeProject.thumbnail.url }}' class="card-img" alt="most recent code">
+      <div class="card-img-overlay">
+        <a href="{% url 'code_project_list' %}" class="btn btn-dark home-btn">Code</a>
+      </div>
+    </div>
+  </div>
 {% endblock content %}

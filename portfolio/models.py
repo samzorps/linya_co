@@ -1,25 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from bs4 import BeautifulSoup
-import requests, lxml
-
-def scrape_prices(size):
-    if size == '8x10':
-        size_slug = '8x10-art-prints'
-    else:
-        return False
-    source = requests.get('https://www.printkeg.com/collections/fine-arts-printing/products/'
-                          +size_slug).text
-    soup = BeautifulSoup(source, 'lxml')
-    price = soup.select("#price-preview")
-    if price in [None, []]:
-        return False
-    price = price[0].text
-    stripped_price = ''
-    for char in price:
-        if char in ".1234567890":
-            stripped_price += char
-    return float(stripped_price)
+from PIL import Image, ImageOps
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import sys
 
 
 class ArtCollection(models.Model):
@@ -31,6 +15,23 @@ class ArtCollection(models.Model):
     description = models.TextField()
     def __str__(self):
         return self.name
+    def save(self, *args, **kwargs):
+        """save a sizes object auto set its printing_price
+        """
+        if self.thumbnail.height != self.thumbnail.width:
+            img = Image.open(self.thumbnail)
+            side = min(img.size)
+            img = ImageOps.fit(img, (side, side), method=3, bleed=0.0, centering=(0.5, 0.5))
+            img = img.convert('RGB')
+            output = BytesIO()
+            img.save(output, format='JPEG')
+            output.seek(0)
+            # change the imagefield value to be the newley modifed image value
+            self.thumbnail = InMemoryUploadedFile(output, 'ImageField',
+                                                  f'{self.thumbnail.name.split(".")[0]}.jpg',
+                                                  'image/jpeg', sys.getsizeof(output),
+                                                  None)
+        super().save(*args, **kwargs)
 
 
 class Sizes(models.Model):
@@ -46,15 +47,6 @@ class Sizes(models.Model):
         verbose_name = 'Size'
     size = models.CharField(max_length=30)
     printing_price = models.DecimalField(max_digits=12, decimal_places=2)
-
-    def save(self, *args, **kwargs):
-        """save a sizes object auto set its printing_price
-        """
-        super(Sizes, self).save(*args, **kwargs)
-        pp = scrape_prices(self.size)
-        if not pp:
-            return
-        self.printing_price = pp
 
 
 class ArtPiece(models.Model):

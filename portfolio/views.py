@@ -4,22 +4,38 @@ from django.views.generic import ListView, DetailView
 
 def home(request):
     context = {
-        'mostRecentPiece': ArtPiece.objects.all().order_by(date_created)[0]
+        'mostRecentArtPiece': ArtPiece.objects.latest('date_created'),
+        'mostRecentCodeProject': CodeProject.objects.latest('date_created'),
     }
-    return render(request, home, context=context)
+    return render(request, 'portfolio/home.html', context=context)
 
+def store(request):
+    context = {
+        'piecesForSale': ArtPiece.objects.filter(is_for_sale=True),
+    }
+    return render(request, 'portfolio/store.html', context=context)
 
-class CollectionListView(ListView):
+class ArtPieceDetailView(DetailView):
+    model = ArtPiece
+
+class ArtCollectionDetailView(DetailView):
     model = ArtCollection
-#   template_name = <app>/<model>_<viewtype>.html
+    context_object_name = 'collection'
+
+class CodeProjectDetailView(DetailView):
+    model = CodeProject
+
+class ArtCollectionListView(ListView):
+    model = ArtCollection
+    template_name = 'portfolio/artcollection_list.html'
     context_object_name = 'collections'
     ordering = ['-date_created']
+    paginate_by = 3
+
+class ArtPieceListView(ListView):
+    model = ArtPiece
+    paginate_by = 8
 
 class CodeProjectListView(ListView):
     model = CodeProject
-
-class CollectionDetailView(DetailView):
-    model = ArtCollection
-
-class ArtPiecetDetailView(DetailView):
-    model = ArtPiece
+    paginate_by = 8

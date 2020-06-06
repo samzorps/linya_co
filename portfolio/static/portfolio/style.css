@@ -1,3 +1,65 @@
 body {
-      font-family: Arial,sans-serif;
+  font-family: Arial,sans-serif;
+  color: black;
 }
+
+.home-container {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.home-flex-item{
+  flex: 1 1 50%;
+}
+
+.home-btn{
+  margin-top:15vw;
+}
+
+.flex-portfolio {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	max-width: 100%;
+  padding: 3%;
+}
+
+.four-per-row {
+  flex: 0 1 25%;
+  margin: 3%;
+}
+
+/* portfolio thumbnail text */
+.card-text-animated {
+  opacity: 0;
+  z-index: 2000;
+}
+
+.card:hover .card-img-animated {
+  animation: card-image .7s 1;
+  filter: blur(1px) brightness(50%);
+}
+
+.card:hover .card-text-animated {
+  animation: card-text .7s 1;
+  opacity: 1;
+}
+
+@keyframes card-text {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+ }
+
+@keyframes card-image {
+   from {
+     filter: none;
+   }
+   to {
+     filter: blur(1px) brightness(50%);
+   }
+  }
