@@ -4,6 +4,7 @@
   <div class='flex-portfolio'>
     {% for ac in collections %}
       <div class="card text-white four-per-row">
+        <a class="stretched-link" href="{{ ac.get_absolute_url }}"></a>
         <img src='{{ ac.thumbnail.url }}' class="card-img card-img-animated" alt="{{ ac.name }}">
         <div class="card-img-overlay">
           <h5 class="card-title card-text-animated">{{ ac.name }}</h5>

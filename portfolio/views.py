@@ -15,8 +15,12 @@ def store(request):
     }
     return render(request, 'portfolio/store.html', context=context)
 
+def aboutMe(request):
+    return render(request, 'portfolio/about_me.html')
+
 class ArtPieceDetailView(DetailView):
     model = ArtPiece
+    context_object_name = 'art_piece'
 
 class ArtCollectionDetailView(DetailView):
     model = ArtCollection

@@ -3,13 +3,22 @@ body {
   color: black;
 }
 
-.home-container {
+.flex-row-wrap-container {
   display: flex;
   flex-flow: row wrap;
 }
 
-.home-flex-item{
+.flex-row-nowrap-container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.flex-gs-half-basis-item{
   flex: 1 1 50%;
+}
+
+.flex-grow-half-basis-item{
+  flex: 0 0 50%;
 }
 
 .home-btn{

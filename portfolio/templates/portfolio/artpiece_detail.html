@@ -1,5 +1,19 @@
 {% extends "base_and_header_footer.html" %}
 
 {% block content %}
-
+  <div class="row">
+    <img src="{{ art_piece.image.url }}" class="col-6">
+    <div class="col-6">
+      <h2>{{ art_piece.name }}<h3>
+      <h4>{{ art_piece.date_created }}<h4>
+      <p>{{ art_piece.description }}<p>
+      <h3>{{ art_piece.price }}<h3>
+      {% for sz in art_piece.size_options.all %}
+        <h4>{{ sz.size }}<h4>
+      {% endfor %}
+      {% if art_piece.is_for_sale %}
+        <button type="button" class="btn btn-dark btn-lg btn-block">ADD TO CART</button>
+      {% else %}
+        <button type="button" class="btn btn-dark btn-lg" disabled>NOT FOR SALE</button>
+      {% endif %}
 {% endblock content %}

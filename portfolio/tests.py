@@ -18,6 +18,3 @@ class TestCase1(TestCase):
                                 image='media/media_test/django.jpg',
                                 is_for_sale=True,
                                 base_price=50.00)
-
-    def test_price_scraper(self):
-        self.assertEqual(Sizes.objects.get(size='8x10').printing_price, 10.99)

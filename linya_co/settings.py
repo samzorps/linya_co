@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -123,4 +123,11 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-ADMINS = [('Linya Hu', 'linya.a.hu@gmail.com')]
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '465'
+EMAIL_HOST_USER = 'linya.a.hu@gmail.com'
+EMAIL_HOST_PASSWORD = '##################'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+ADMINS = [('Linya Hu', 'linya.a.hu@gmail.com'), ('Sam Zorpette', 'samzorpette@gmail.com')]

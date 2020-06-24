@@ -1,5 +1,16 @@
 {% extends "base_and_header_footer.html" %}
 
 {% block content %}
-
+  <div class='flex-portfolio'>
+    {% for cp in projects %}
+      <div class="card text-white four-per-row">
+        <img src='{{ cp.thumbnail.url }}' class="card-img card-img-animated" alt="{{ cp.name }}">
+        <div class="card-img-overlay">
+          <h5 class="card-title card-text-animated">{{ cp.name }}</h5>
+          <p class="card-text card-text-animated">{{ cp.description }}</p>
+          <p class="card-text card-text-animated">{{ cp.date_created }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock content %}
