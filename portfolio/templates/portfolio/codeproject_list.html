@@ -4,6 +4,7 @@
   <div class='flex-portfolio'>
     {% for cp in projects %}
       <div class="card text-white four-per-row">
+        <a class="stretched-link" href="{% url 'code_project_detail' cp.slug %}"></a>
         <img src='{{ cp.thumbnail.url }}' class="card-img card-img-animated" alt="{{ cp.name }}">
         <div class="card-img-overlay">
           <h5 class="card-title card-text-animated">{{ cp.name }}</h5>

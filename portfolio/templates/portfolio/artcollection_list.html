@@ -1,10 +1,14 @@
 {% extends "base_and_header_footer.html" %}
 
 {% block content %}
+<nav class="nav nav-pills nav-fill">
+  <a class="nav-item nav-link btn-dark active" href="{% url 'art_collection_list' %}">Collections</a>
+  <a class="nav-item nav-link btn-light" href="{% url 'art_piece_list' %}">Pieces</a>
+</nav>
   <div class='flex-portfolio'>
     {% for ac in collections %}
       <div class="card text-white four-per-row">
-        <a class="stretched-link" href="{{ ac.get_absolute_url }}"></a>
+        <a class="stretched-link" href="{% url 'art_collection_detail' ac.slug %}"></a>
         <img src='{{ ac.thumbnail.url }}' class="card-img card-img-animated" alt="{{ ac.name }}">
         <div class="card-img-overlay">
           <h5 class="card-title card-text-animated">{{ ac.name }}</h5>

@@ -14,7 +14,7 @@ class ArtCollection(models.Model):
     name = models.CharField(max_length=100, unique=True)
     thumbnail = models.ImageField(upload_to='ArtCollectionThumbnails/')
     date_created = models.DateTimeField(default=timezone.now)
-    slug = models.SlugField(default=self.name, max_length=50)
+    slug = models.SlugField(max_length=50)
     description = models.TextField()
     def __str__(self):
         return self.name
@@ -65,6 +65,7 @@ class ArtPiece(models.Model):
     image_cut_square = models.ImageField(upload_to="ArtPieces/", default='media/placeholder_image.jpg')
     is_for_sale = models.BooleanField(default=False)
     base_price = models.DecimalField(max_digits=12, decimal_places=2)
+    slug = models.SlugField(max_length=50)
     """This is the base price which will be used with
     the kegprint price for the specific size to get the final sale price
     """
@@ -124,6 +125,7 @@ class CodeProject(models.Model):
     description = models.TextField()
     live_version_link = models.URLField(null=True, blank=True)
     gitHub_link = models.URLField(null=True, blank=True)
+    slug = models.SlugField(max_length=50)
     def __str__(self):
         return self.name
     def save(self, *args, **kwargs):
@@ -144,26 +146,3 @@ class CodeProject(models.Model):
                                                   None)
             img.close()
         super().save(*args, **kwargs)
-
-
-
-class Contact(models.Model):
-    """An instance of someone filling out the contact field
-    """
-    name = models.CharField(max_length=50)
-    email = models.EmailField()
-    message = models.TextField()
-    time_sent = models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return self.name
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        body_of_email = "Name: " + self.name + "\n" + \
-                      "Email: " + self.email + "\n" + \
-                      "Message: " + self.message + "\n \n" + \
-                      "Time Sent: " + self.time_sent + "\n"
-        send_mail('New contact on linya.co!',
-                  body_of_email,
-                  'linya.a.hu@gmail.com',
-                  ['linya.a.hu@gmail.com'],
-                  fail_silently=False)

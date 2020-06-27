@@ -1,5 +1,14 @@
 {% extends "base_and_header_footer.html" %}
 
 {% block content %}
+  <div class="row">
+    <img src="{{ project.thumbnail.url }}" class="col-6">
+    <div class="col-6">
+      <h2>{{ project.name }}<h3>
+      <h4>{{ project.date_created }}<h4>
+      <p>{{ project.description }}<p>
+      <a class="btn btn-dark" href="{{ project.gitHub_link }}" role="button">GitHub</a>
+      <a class="btn btn-dark" href="{{ project.live_version_link }}" role="button">Live Version</a>
+    </div>
 
 {% endblock content %}

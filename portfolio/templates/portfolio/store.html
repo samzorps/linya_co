@@ -4,7 +4,7 @@
 <div class='flex-portfolio'>
   {% for ap in piecesForSale %}
     <div class="card text-white four-per-row">
-      <a class="stretched-link" href="{{ ap.get_absolute_url }}"></a>
+      <a class="stretched-link" href="{% url 'art_piece_detail' ap.slug %}"></a>
       <img src='{{ ap.image_cut_square.url }}' class="card-img card-img-animated" alt="{{ ac.name }}">
       <div class="card-img-overlay">
         <h5 class="card-title card-text-animated">{{ ap.name }}</h5>

@@ -1,0 +1,27 @@
+{% extends "base_and_header_footer.html" %}
+
+{% block content %}
+  <h1>Contact Me</h1>
+  <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="fieldWrapper form-group">
+          {{ form.from_email.errors }}
+          <label for="{{ form.from_email.id_for_label }}">Email address</label>
+          <input type="email" class="form-control" id="id_from_email" name="from_email" type="text" maxlength="100" placeholder="Yourname@example.com" required>
+      </div>
+      <div class="fieldWrapper form-group">
+          {{ form.subject.errors }}
+          <label for="{{ form.subject.id_for_label }}">Subject</label>
+          <input type="text" class="form-control" id="id_subject" name="subject" type="text" maxlength="100" placeholder="" required>
+      </div>
+      <div class="fieldWrapper form-group">
+          {{ form.message.errors }}
+          <label for="{{ form.message.id_for_label }}">Message</label>
+          <textarea type="message" class="form-control" id="id_message" name="message" rows="5" maxlength="1500" required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-dark btn-lg btn-block">Send</button>
+      </div>
+  </form>
+{% endblock content %}
