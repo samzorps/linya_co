@@ -1,19 +1,43 @@
 {% extends "base_and_header_footer.html" %}
 
+{% block head %}
+
+{% endblock head %}
+
+
 {% block content %}
   <div class="row">
-    <img src="{{ art_piece.image.url }}" class="col-6">
+    <img src="{{ object.image.url }}" class="col-6">
     <div class="col-6">
-      <h2>{{ art_piece.name }}<h3>
-      <h4>{{ art_piece.date_created }}<h4>
-      <p>{{ art_piece.description }}<p>
-      <h3>{{ art_piece.price }}<h3>
-      {% for sz in art_piece.size_options.all %}
-        <h4>{{ sz.size }}<h4>
-      {% endfor %}
-      {% if art_piece.is_for_sale %}
-        <button type="button" class="btn btn-dark btn-lg btn-block">ADD TO CART</button>
+      <h2>{{ object.name }}<h3>
+      <h4>{{ object.date_created }}<h4>
+      <p>{{ object.description }}<p>
+      <h3>{{ object.price }}<h3>
+      {% if object.is_for_sale %}
+      <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="fieldWrapper form-group">
+            {{ form.piece.errors }}
+            <input type="hidden" class="form-control" id="id_piece" name="piece" type="text" maxlength="100" value="{{ object.name }}" default="{{ object.name }}" required>
+        </div>
+        <div class="fieldWrapper form-group">
+          {{ form.size.errors }}
+          <label for="{{ form.size.id_for_label }}">Size:</label>
+          <select id="id_size" name="size" required>
+            {% for sz in object.size_options.all %}
+              <option value="{{ sz.size }}">{{ sz.size }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-dark btn-lg btn-block">ADD TO CART</button>
+        </div>
+      </form>
       {% else %}
-        <button type="button" class="btn btn-dark btn-lg" disabled>NOT FOR SALE</button>
+        <button type="button" class="btn btn-dark btn-lg" disabled>SOLD OUT OR NOT FOR SALE</button>
       {% endif %}
+    </div>
+  </div>
+
 {% endblock content %}

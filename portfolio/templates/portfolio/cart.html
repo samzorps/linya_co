@@ -1,0 +1,166 @@
+{% extends "base_and_header_footer.html" %}
+{% load static %}
+{% block content %}
+  <!--Grid row-->
+  <div class="row">
+
+    <!--Grid column-->
+    <div class="col-lg-8">
+
+      <!-- Card -->
+      <div class="card wish-list mb-4">
+        <div class="card-body">
+
+          <h5 class="mb-4">Cart (<span>{{ request.session.cartCount }}</span> items)</h5>
+          {% for cart_item in item_list %}
+            <div class="row mb-4">
+              <div class="col-md-5 col-lg-3 col-xl-3">
+                <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
+                  <img class="img-fluid w-100"
+                    src="{{ cart_item.0.image_cut_square.url }}" alt="Sample">
+                </div>
+              </div>
+              <div class="col-md-7 col-lg-9 col-xl-9">
+                <div>
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <h5>{{ cart_item.0.name }}</h5>
+                      <p class="mb-1 text-muted text-uppercase small">Collection: {{ cart_item.1.collection.name }}</p>
+                      <p class="mb-2 text-muted text-uppercase small">Size: {{ cart_item.1.size }}</p>
+                    </div>
+                    <div>
+                      <p1 class="form-text text-muted text-center">
+                        (Note, 1 piece)
+                      </p1>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="fieldWrapper form-group">
+                            {{ form.piece.errors }}
+                            <input type="hidden" class="form-control" id="id_piece" name="piece" type="text" maxlength="100" value="{{ cart_item.0.name }}" default="{{ object.name }}" required>
+                        </div>
+                        <div class="fieldWrapper form-group">
+                          {{ form.size.errors }}
+                          <input type="hidden" class="form-control" id="id_size" name="size" type="text" maxlength="100" value="{{ cart_item.1.size }}" default="{{ object.size }}" required>
+                        </div>
+                        <div class="form-actions">
+                          <button type="submit" class="btn btn-link btn-sm">REMOVE ITEM</button>
+                        </div>
+                      </form>
+                    </div>
+                    <p class="mb-0"><span><strong>${{ cart_item.2 }}</strong></span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="mb-4">
+          {% endfor %}
+          <p class="text-primary mb-0"><i class="fas fa-info-circle mr-1"></i> Do not delay the purchase, adding
+            items to your cart does not mean booking them.</p>
+
+        </div>
+      </div>
+      <!-- Card -->
+
+      <!-- Card -->
+      <div class="card mb-4">
+        <div class="card-body">
+
+          <h5 class="mb-4">Expected shipping</h5>
+
+          <p class="mb-0"> Thu., 12.03. - Mon., 16.03.</p>
+        </div>
+      </div>
+      <!-- Card -->
+
+      <!-- Card -->
+      <div class="card mb-4">
+        <div class="card-body">
+
+          <h5 class="mb-4">We accept</h5>
+
+          <img class="mr-2" width="45px"
+            src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+            alt="Visa">
+          <img class="mr-2" width="45px"
+            src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+            alt="American Express">
+          <img class="mr-2" width="45px"
+            src="https://mdbootstrap.com/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+            alt="Mastercard">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAAElUlEQVRoge2Ya1CUVRjHf+/uusjNZclW1gWpTCeuhplKmDk2DmZYCo6OggjmpdGycdRJUqsPNV10IDEbyzuk0+QGIqQpS4xhlpcZIVPQbAIvswlh7C6Cssu+fdhcWZB1vYysM+9vZj88z3POc/7/97xn5+yChISEhITEQ4zQOXHxYmNou7w9B0gEAh+8pFtiEaBUkLM8TKP5o2PBxYBDvK0KhOAHq89TxCsymzw2LKzvpRsZWcey48l7q3gAIdiusGd3zMg6jUh8gGruFheNnQ14yzvvDlXHoLOBhw7JQE8jGehpJAMdEUWR1tbW+9nytnRrIFyr4XFdCKPjh7N100YAkhLHYTiwn4qDBxkeF8vQmEiKCgsA2LppI0OjI4gY+Bhrs9cg2K6jLl2FLjcaXW4MasO7tJiuEDV4IFWVJwBotliIHPQE5WUGwrUa58dwYD/hWg0DB+iY8upEGhsbuzWgcOfu0JHjnK+rZeHr83hUo3Hm169by0svJzF/wUKsbVZK9hSxZdNX7PhWT3+djjM1NQSVf0DgsS+dcwKPbkCHwJSp0/g6bztDno6j4Ds9T0VEEBkVDUCdsR6Ak79V0S8khH2lPzItZTK7C/S8Nnf+ne0AgEKhID5hFLMyZ1NeZnDmn0tIYGd+HrnZ2fj7+1Og38WCNxcRGRVNUJCaESPj8asu7NLP75SembMyKN5diMnUxI68baRnZDrrWcuWkrVsKQA2q5Wa6mosZjNabf9uNXp0BgRBQCaXO+NFi5fwjb6Qs2drWDBvDqIoInS9md9iNTlPDhpM3DPDyFq2lIaGBiYkveIsxwyJJWZILAAtLS3MnT2LSSkpTEia6Bzje/YHzw3YbDZ++fkQ27ZsZsrUaQC02+18+tGH6MJCGfviOMwWM5MmJ7Phi8+pPnUKs9nE8WNHaYlM6dLvamQyAOkZmXxfvIfpqWkolUpnfUZaOjPS0gHoo1Kx8r332VtSTLPF4niQ1lbUpStcero9A6NGDCNswACWr1jFiJHxAMhlDs9jn09ArVbzyZocRo0eTVNTE/PnZFJ/+TJvvLWYZxe+A4DfacchvxqVgmmMIzcucTy60FBSZ6a7rBeudZyzzdvzAZieOpO9JcWszHqbz9atJ3jfEhSmCy5zXPa9zlgvujPUk6gqVqOqWA2AsO6mbrc74BWIIqpDa5ziO+PVBgRrK8H7luD/u77bMV5roFfDGfoWzaNXfbXbcV5nQGi7iupwDoG/bkCwt912vPcYsNvwP7mLoIMfI282ejytxw0Ituv4nS5EdTgHxZW/7nh+jxlQ/FtLQGU+AVU7kbV0f1m7bZ9OsRnoc0/K3CDYruF7zkDAiTx61/4Eov2Oe9h9AkWwOGMXAwIYREi+d6k3kV034XuuFN8ze/H9swzBem+/F6z9Yi7BYWfsYkDWLmS1y8UXgEfuegW7DR9jFT61FfSuq8Dn/BGPvk08au2jEq9p4zI6Guhyhbxw4R/d/3/fjceD10lu+RulsRKlsRIfYyXKi0eRtTXfF8E3EJUBYltI7KVr2riMoLT1Zfe1uYSEhISERE/yH2TLeAQjlXJSAAAAAElFTkSuQmCC"/>
+          <i class="fab fa-apple-pay"></i>
+          <svg id="Artwork" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 165.5 106" width="45px" height="auto"><style>.st0{fill:#fff}</style><path id="XMLID_4_" d="M150.7 0h-139c-1 0-2.1.1-3.1.3-1 .2-2 .5-3 1-.9.4-1.8 1.1-2.5 1.8S1.7 4.7 1.3 5.6c-.5.9-.8 1.9-1 3-.2 1-.2 2.1-.3 3.1v82.5c0 1 .1 2.1.3 3.1.2 1 .5 2 1 3 .5.9 1.1 1.8 1.8 2.5s1.6 1.4 2.5 1.8c.9.5 1.9.8 3 1 1 .2 2.1.2 3.1.3h142.1c1 0 2.1-.1 3.1-.3 1-.2 2-.5 3-1 .9-.5 1.8-1.1 2.5-1.8s1.4-1.6 1.8-2.5c.5-.9.8-1.9 1-3 .2-1 .2-2.1.3-3.1v-1.4-78-1.7-1.4c0-1-.1-2.1-.3-3.1-.2-1-.5-2-1-3-.5-.9-1.1-1.8-1.8-2.5s-1.6-1.4-2.5-1.8c-.9-.5-1.9-.8-3-1-1-.2-2.1-.2-3.1-.3H150.7z"/><path id="XMLID_3_" class="st0" d="M150.7 3.5H153.8c.8 0 1.7.1 2.6.2.8.1 1.4.3 2 .6.6.3 1.1.7 1.6 1.2s.9 1 1.2 1.6c.3.6.5 1.2.6 2 .2.9.2 1.8.2 2.6v82.5c0 .8-.1 1.7-.2 2.6-.1.7-.3 1.4-.6 2-.3.6-.7 1.1-1.2 1.6s-1 .9-1.6 1.2c-.6.3-1.2.5-2 .6-.9.2-1.8.2-2.6.2H11.7c-.7 0-1.7-.1-2.6-.2-.7-.1-1.4-.3-2-.7-.6-.3-1.1-.7-1.6-1.2s-.9-1-1.2-1.6c-.3-.6-.5-1.2-.6-2-.2-.9-.2-1.8-.2-2.6v-81-1.4c0-.8.1-1.7.2-2.6.1-.7.3-1.4.6-2 .3-.6.7-1.1 1.2-1.6s1-.9 1.6-1.2c.6-.3 1.2-.5 2-.6.9-.2 1.8-.2 2.6-.2h139"/><path d="M45.2 35.6c1.4-1.8 2.4-4.2 2.1-6.6-2.1.1-4.6 1.4-6.1 3.1-1.3 1.5-2.5 4-2.2 6.3 2.4.3 4.7-1 6.2-2.8M47.3 39c-3.4-.2-6.3 1.9-7.9 1.9-1.6 0-4.1-1.8-6.8-1.8-3.5.1-6.7 2-8.5 5.2-3.6 6.3-1 15.6 2.6 20.7 1.7 2.5 3.8 5.3 6.5 5.2 2.6-.1 3.6-1.7 6.7-1.7s4 1.7 6.8 1.6c2.8-.1 4.6-2.5 6.3-5.1 2-2.9 2.8-5.7 2.8-5.8-.1-.1-5.5-2.1-5.5-8.3-.1-5.2 4.2-7.7 4.4-7.8-2.3-3.6-6.1-4-7.4-4.1"/><g><path d="M76.7 31.9c7.4 0 12.5 5.1 12.5 12.4 0 7.4-5.2 12.5-12.7 12.5h-8.1v12.9h-5.9V31.9h14.2zm-8.3 20h6.7c5.1 0 8-2.8 8-7.5 0-4.8-2.9-7.5-8-7.5h-6.8v15zM90.7 62c0-4.8 3.7-7.8 10.3-8.2l7.6-.4v-2.1c0-3.1-2.1-4.9-5.5-4.9-3.3 0-5.3 1.6-5.8 4h-5.4c.3-5 4.6-8.7 11.4-8.7 6.7 0 11 3.5 11 9.1v19h-5.4v-4.5h-.1c-1.6 3.1-5.1 5-8.7 5-5.6 0-9.4-3.4-9.4-8.3zm17.9-2.5v-2.2l-6.8.4c-3.4.2-5.3 1.7-5.3 4.1 0 2.4 2 4 5 4 4 0 7.1-2.7 7.1-6.3zM119.3 80v-4.6c.4.1 1.4.1 1.8.1 2.6 0 4-1.1 4.9-3.9 0-.1.5-1.7.5-1.7l-10-27.6h6.1l7 22.5h.1l7-22.5h6l-10.3 29.1c-2.4 6.7-5.1 8.8-10.8 8.8-.4-.1-1.8-.1-2.3-.2z"/></g></svg>
+          <img src="{% static 'portfolio/google_pay_logo.png' %}" class="mr-2" width="45px">
+        </div>
+      </div>
+      <!-- Card -->
+
+    </div>
+    <!--Grid column-->
+
+    <!--Grid column-->
+    <div class="col-lg-4">
+
+      <!-- Card -->
+      <div class="card mb-4">
+        <div class="card-body">
+
+          <h5 class="mb-3">The total amount of</h5>
+
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+              Subtotal
+              <span>${{ order_total }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+              Shipping
+              <span>Free</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+              <div>
+                <strong>The total amount of</strong>
+              </div>
+              <span><strong>${{ order_total }}</strong></span>
+            </li>
+          </ul>
+
+          {% if request.session.cartCount > 0 %}
+            <button type="submit" id="checkout-button" data-secret="{{ session_id }}" class="btn btn-primary btn-block waves-effect waves-light">Go to checkout</button>
+          {% else %}
+            <button type="button" class="btn btn-primary btn-block waves-effect waves-light" disabled>Add Something To Your Cart</button>
+          {% endif %}
+
+        </div>
+      </div>
+      <!-- Card -->
+
+    </div>
+    <!--Grid column-->
+
+  </div>
+  <!--Grid row-->
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script type="text/javascript">
+  var stripe = Stripe('pk_test_51H2mBnGkKYIG13Jo7BwjEZy6hvxsP9c44nGAEB9freu2YlVZZSiFuKFRzAYLeSYOqwJlHKfkOcBruIHIFO6XRMiL00tOJi3bYT');
+  var checkoutButton = document.getElementById('checkout-button');
+
+  checkoutButton.addEventListener('click', function() {
+    stripe.redirectToCheckout({
+      // Make the id field from the Checkout Session creation API response
+      // available to this file, so you can provide it as argument here
+      // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+      sessionId: '{{ session_id }}'
+    }).then(function (result) {
+      // If `redirectToCheckout` fails due to a browser or network
+      // error, display the localized error message to your customer
+      // using `result.error.message`.
+    });
+  });
+  </script>
+{% endblock content %}

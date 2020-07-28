@@ -67,13 +67,13 @@ class ArtPiece(models.Model):
     base_price = models.DecimalField(max_digits=12, decimal_places=2)
     slug = models.SlugField(max_length=50)
     """This is the base price which will be used with
-    the kegprint price for the specific size to get the final sale price
+    the printing price for the size to get the final sale price
     """
     size_options = models.ManyToManyField('Sizes')
     def __str__(self):
         return self.name
     def save(self, *args, **kwargs):
-        """save a sizes object auto set its printing_price
+        """save a ArtPiece object auto set its image_cut_square and image
         """
         # cut image_cut_square into a square
         if self.image_cut_square.height != self.image_cut_square.width:
