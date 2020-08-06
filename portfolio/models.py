@@ -63,6 +63,7 @@ class ArtPiece(models.Model):
                                    null=True, blank=True)
     image = models.ImageField(upload_to='ArtPieces/', default='media/placeholder_image.jpg')
     image_cut_square = models.ImageField(upload_to="ArtPieces/", default='media/placeholder_image.jpg')
+    secondary_image = models.ImageField(upload_to='ArtPieces/', null=True, blank=True)
     is_for_sale = models.BooleanField(default=False)
     base_price = models.DecimalField(max_digits=12, decimal_places=2)
     slug = models.SlugField(max_length=50)

@@ -5,17 +5,31 @@
   <a class="nav-item nav-link btn-light" href="{% url 'art_collection_list' %}">Collections</a>
   <a class="nav-item nav-link btn-dark active" href="{% url 'art_piece_list' %}">Pieces</a>
 </nav>
-  <div class='flex-portfolio'>
-    {% for ap in pieces %}
-      <div class="card text-white four-per-row">
-        <a class="stretched-link" href="{% url 'art_piece_detail' ap.slug %}"></a>
-        <img src='{{ ap.image_cut_square.url }}' class="card-img card-img-animated" alt="{{ ap.name }}">
-        <div class="card-img-overlay">
-          <h5 class="card-title card-text-animated">{{ ap.name }}</h5>
-          <p class="card-text card-text-animated">{{ ap.description }}</p>
-          <p class="card-text card-text-animated">{{ ap.date_created }}</p>
-        </div>
-      </div>
-    {% endfor %}
+<div class='flex-portfolio'>
+  {% for ap in page_obj %}
+  <div class="card text-white four-per-row">
+    <a class="stretched-link" href="{% url 'art_piece_detail' ap.slug %}"></a>
+    <img src='{{ ap.image_cut_square.url }}' class="card-img card-img-animated" alt="{{ ap.name }}">
+    <div class="card-img-overlay">
+      <h5 class="card-title card-text-animated">{{ ap.name }}</h5>
+      <p class="card-text card-text-animated">{{ ap.description }}</p>
+      <p class="card-text card-text-animated">{{ ap.date_created }}</p>
+    </div>
   </div>
+  {% endfor %}
+</div>
+
+<ul class="pagination justify-content-center">
+  {% if page_obj.has_previous %}
+  <li class="page-item"><a class="page-link bg-dark text-white" href="?page=1">first</a></li>
+  <li class="page-item bg-dark text-white"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+  {% endif %}
+  {% if page_obj.has_previous or page_obj.has_next %}
+  <li class="page-item active"><a class="page-link page-link bg-dark text-white" href="#">{{ page_obj.number }}</a></li>
+  {% endif %}
+  {% if page_obj.has_next %}
+  <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+  <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{ page_obj.paginator.num_pages }}">last</a></li>
+  {% endif %}
+</ul>
 {% endblock content %}

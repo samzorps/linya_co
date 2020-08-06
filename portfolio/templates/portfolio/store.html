@@ -14,4 +14,17 @@
     </div>
   {% endfor %}
 </div>
+<ul class="pagination justify-content-center">
+  {% if page_obj.has_previous %}
+  <li class="page-item"><a class="page-link bg-dark text-white" href="?page=1">first</a></li>
+  <li class="page-item bg-dark text-white"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+  {% endif %}
+  {% if page_obj.has_previous or page_obj.has_next %}
+  <li class="page-item active"><a class="page-link page-link bg-dark text-white" href="#">{{ page_obj.number }}</a></li>
+  {% endif %}
+  {% if page_obj.has_next %}
+  <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+  <li class="page-item"><a class="page-link bg-dark text-white" href="?page={{ page_obj.paginator.num_pages }}">last</a></li>
+  {% endif %}
+</ul>
 {% endblock content %}

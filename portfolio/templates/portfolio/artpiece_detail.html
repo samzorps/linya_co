@@ -39,5 +39,8 @@
       {% endif %}
     </div>
   </div>
+  {% if object.secondary_image %}
+  <img src="{{ object.secondary_image.url }}">
+  {% endif %}
 
 {% endblock content %}

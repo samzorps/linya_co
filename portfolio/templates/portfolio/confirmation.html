@@ -1,0 +1,45 @@
+{% extends "base_and_header_footer.html" %}
+
+{% block content %}
+<div class="jumbotron text-center bg-white">
+  <h1 class="display-3">Thank You!</h1>
+  <p class="lead"><strong>Your order number is {{ order_number }}</strong></p>
+  <h5 class="mb-4">Your total was {{ order_total }}. You ordered:</h5>
+  {% for cart_item in item_list %}
+    <div class="row mb-4">
+      <div class="col-md-5 col-lg-3 col-xl-3">
+        <div class="view zoom overlay z-depth-1 rounded mb-3 mb-md-0">
+          <img class="img-fluid w-100"
+            src="{{ cart_item.0.image_cut_square.url }}" alt="Image of art">
+        </div>
+      </div>
+      <div class="col-md-7 col-lg-9 col-xl-9">
+        <div>
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5>{{ cart_item.0.name }}</h5>
+              <p class="mb-1 text-muted text-uppercase small">Collection: {{ cart_item.1.collection.name }}</p>
+              <p class="mb-2 text-muted text-uppercase small">Size: {{ cart_item.1.size }}</p>
+            </div>
+            <div>
+              <p1 class="form-text text-muted text-center">
+                (Note, 1 piece)
+              </p1>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <p class="mb-0"><span><strong>${{ cart_item.2 }}</strong></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="mb-4">
+  {% endfor %}
+  <p>
+    Having trouble? <a href="{% url 'contact_me' %}">Contact us</a>
+  </p>
+  <p class="lead">
+    <a class="btn btn-primary btn-sm" href="{% url 'home' %}" role="button">Continue to homepage</a>
+  </p>
+</div>
+{% endblock content %}

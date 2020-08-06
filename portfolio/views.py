@@ -1,14 +1,14 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.core.mail import send_mail, BadHeaderError
+from django.contrib import messages
+import stripe
 from .models import ArtCollection, ArtPiece, Sizes, CodeProject
 from .forms import ContactForm, AddToCartForm, RemoveFromCartForm
-import stripe
-#from django.contrib.sessions import django-addmin
+#from django.contrib.sessions import django-admin
 
 def clearCartView(request):
     request.session.clear()
@@ -42,15 +42,15 @@ def contactMe(request):
             try:
                 send_mail(subject, message, from_email, ['linya.a.hu@gmail.com'])
             except BadHeaderError:
-                return HttpResponse('Invalid header found.')
-            return redirect('success')
+                messages.error(request, "Bad header found, form not sent")
+                return redirect("/")
+            except Exception:
+                messages.error(request,
+                               "Error sending mail, please check your information and try again")
+                return redirect("/")
+            messages.success(request, "Your message has been sent!")
+            return redirect("/")
     return render(request, "contactme.html", {'form': form})
-
-def success(request):
-    return HttpResponse('Success!')
-
-def failure(request):
-    return HttpResponse('Failure! Something went wrong.')
 
 def cartView(request):
     context = {}
@@ -61,8 +61,13 @@ def cartView(request):
         for cart_item in request.session['cart']:
             piece_name = cart_item[0]
             size_pk = cart_item[1]
-            piece = get_object_or_404(ArtPiece, name=piece_name)
-            size = get_object_or_404(Sizes, pk=size_pk)
+            try:
+                piece = ArtPiece.objects.get(name=piece_name)
+                size = Sizes.objects.get(pk=size_pk)
+            except Exception:
+                messages.error(request, "Cart error, your cart has been cleared")
+                request.session.clear()
+                return redirect("/")
             price = piece.base_price + size.printing_price
             order_total += price
             item_list += [[piece, size, price]]
@@ -80,15 +85,58 @@ def cartView(request):
                 'price_data' : price_data,
                 'quantity' : 1
             }]
-        stripe.api_key = 'sk_test_51H2mBnGkKYIG13JoxGEM8rf5N1lF6tYST7h7DqrlwFrO64efz9EP4YhxqSsT6jQGHDhoXpIWkCGZtX06zdHjeozb00N5LC9UHu'
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=line_items,
-            mode='payment',
-            success_url='https://www.merriam-webster.com/dictionary/success',
-            cancel_url='https://www.merriam-webster.com/dictionary/cancel',
-        )
-        context['session_id'] = session.id
+
+        try:
+            stripe.api_key = 'sk_test_51H2mBnGkKYIG13JoxGEM8rf5N1lF6tYST7h7DqrlwFrO64efz9EP4YhxqSsT6jQGHDhoXpIWkCGZtX06zdHjeozb00N5LC9UHu'
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=line_items,
+                mode='payment',
+                success_url='https://www.merriam-webster.com/dictionary/success',
+                cancel_url='https://www.merriam-webster.com/dictionary/cancel',
+            )
+            context['session_id'] = session.id
+
+        except stripe.error.CardError as e:
+            body = e.json_body
+            err = body.get('error', {})
+            messages.warning(request, f"{err.get('message')}")
+            return redirect("/")
+
+        except stripe.error.RateLimitError as e:
+            # Too many requests made to the API too quickly
+            messages.warning(request, "Rate limit error")
+            return redirect("/")
+
+        except stripe.error.InvalidRequestError as e:
+            # Invalid parameters were supplied to Stripe's API
+            #print(e)
+            messages.warning(request, "Invalid parameters")
+            return redirect("/")
+
+        except stripe.error.AuthenticationError as e:
+            # Authentication with Stripe's API failed
+            # (maybe you changed API keys recently)
+            messages.warning(request, "Not authenticated")
+            return redirect("/")
+
+        except stripe.error.APIConnectionError as e:
+            # Network communication with Stripe failed
+            messages.warning(request, "Network error")
+            return redirect("/")
+
+        except stripe.error.StripeError as e:
+            # Display a very generic error to the user, and maybe send
+            # yourself an email
+            messages.warning(
+                request, "Something went wrong. You were not charged. Please try again.")
+            return redirect("/")
+
+        except Exception as e:
+            # send an email to ourselves
+            messages.warning(
+                request, "A serious error occurred. We have been notifed.")
+            return redirect("/")
     else:
         item_list = []
         order_total = 0
@@ -121,6 +169,32 @@ def cartView(request):
 
     return render(request, 'portfolio/cart.html', context=context)
 
+def confirmationView(request, slug):
+    item_list = []
+    order_total = 0
+    if 'cart' in request.session and request.session['cart']:
+        line_items = []
+        for cart_item in request.session['cart']:
+            piece_name = cart_item[0]
+            size_pk = cart_item[1]
+            try:
+                piece = ArtPiece.objects.get(name=piece_name)
+                size = Sizes.objects.get(pk=size_pk)
+            except Exception as e:
+                messages.error(request, "Error getting items, your order has still been placed. ")
+                request.session.clear()
+                return redirect("/")
+            price = piece.base_price + size.printing_price
+            order_total += price
+            item_list += [[piece, size, price]]
+    context = {
+        'order_number' : slug,
+        'item_list' : item_list,
+        'order_total' : order_total
+    }
+    request.session.clear()
+    return render(request, 'portfolio/confirmation.html', context=context)
+
 class ArtPieceDetailControllView(View):
     def get(self, request, *args, **kwargs):
         view = ArtPieceDetailView.as_view()
@@ -143,12 +217,8 @@ class ArtPieceFormView(SingleObjectMixin, FormView):
     form_class = AddToCartForm
     model = ArtPiece
     def form_valid(self, form):
-        #if self.object.name != form.cleaned_data['piece']:
-        #    return HttpResponse(self.object.name)
         art_piece_name = form.cleaned_data['piece']
         size_pk = form.cleaned_data['size']
-        #if size_to_add not in art_piece_to_add.size_options_set.all():
-        #    return super().form_valid(form)
         if 'cart' in self.request.session and self.request.session['cart']:
             self.request.session['cart'] += [[art_piece_name, size_pk]]
         else:
